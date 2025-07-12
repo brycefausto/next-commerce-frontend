@@ -45,7 +45,7 @@ export default function ImageSelector({
     } else {
       setImagePreview(imageUrl)
     }
-  }, [fileProp])
+  }, [fileProp, imageUrl])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files

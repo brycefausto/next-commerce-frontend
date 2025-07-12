@@ -1,5 +1,6 @@
 "use client"
 
+import { logoutAction } from "@/app/(auth)/login/actions"
 import { Button } from "@/components/ui/button"
 import {
   Sidebar,
@@ -14,7 +15,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { APP_NAME, BASE_COMPANIES_IMAGE_URL } from "@/config/env"
-import { logoutAction } from "@/lib/actions/auth-actions"
 import { UserRole } from "@/models/user"
 import { useCompanyContext } from "@/stores/company.store"
 import { useUserContext } from "@/stores/user.store"
@@ -58,49 +58,52 @@ export function AppSidebar() {
       ? BASE_COMPANIES_IMAGE_URL + company?.logo
       : ""
 
-  const menuItems: MenuItem[] = [
-    {
-      title: "Dashboard",
-      url: `/${slug}`,
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Users",
-      url: `/${slug}/users`,
-      icon: Users,
-    },
-    {
-      title: "Companies",
-      url: `/${slug}/companies`,
-      icon: Building2,
-      isSuperAdminMenu: true,
-    },
-    {
-      title: "Products",
-      url: `/${slug}/products`,
-      icon: Package,
-      isCompanyMenu: true,
-    },
-    {
-      title: "Inventory",
-      url: `/${slug}/inventory`,
-      icon: Warehouse,
-      isCompanyMenu: true,
-    },
-    {
-      title: "Orders",
-      url: `/${slug}/orders`,
-      icon: ShoppingCart,
-      isCompanyMenu: true,
-    },
-    {
-      title: "Settings",
-      url: `/${slug}/settings`,
-      icon: Settings,
-    },
-  ]
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        title: "Dashboard",
+        url: `/${slug}`,
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Users",
+        url: `/${slug}/users`,
+        icon: Users,
+      },
+      {
+        title: "Companies",
+        url: `/${slug}/companies`,
+        icon: Building2,
+        isSuperAdminMenu: true,
+      },
+      {
+        title: "Products",
+        url: `/${slug}/products`,
+        icon: Package,
+        isCompanyMenu: true,
+      },
+      {
+        title: "Inventory",
+        url: `/${slug}/inventory`,
+        icon: Warehouse,
+        isCompanyMenu: true,
+      },
+      {
+        title: "Orders",
+        url: `/${slug}/orders`,
+        icon: ShoppingCart,
+        isCompanyMenu: true,
+      },
+      {
+        title: "Settings",
+        url: `/${slug}/settings`,
+        icon: Settings,
+      },
+    ],
+    [slug],
+  )
 
-  let filteredMenuItems = useMemo(() => {
+  const filteredMenuItems = useMemo(() => {
     if (isSuperAdmin) {
       return menuItems.filter((it) => isSuperAdmin && !it.isCompanyMenu)
     }
@@ -110,7 +113,7 @@ export function AppSidebar() {
       if (it.isCompanyMenu && !company) return false
       return true
     })
-  }, [menuItems])
+  }, [menuItems, company, isSuperAdmin])
 
   const copyShopURL = () => {
     const shopLink = window.location.origin + `/${slug}/shop`
@@ -137,7 +140,9 @@ export function AppSidebar() {
 
       <SidebarContent className="bg-gray-700 text-white">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white">Main Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">
+            Main Menu
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredMenuItems.map((item) => (

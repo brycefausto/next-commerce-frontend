@@ -49,8 +49,7 @@ export default function ProductList({
     handleSearchChange,
     handleSearchClick,
     handleSearchEnter,
-  } = usePageUtils()
-  const [loading, setLoading] = useState(false)
+  } = usePageUtils(search)
   const [isViewOpen, setIsViewOpen] = useState(false)
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -107,86 +106,71 @@ export default function ProductList({
 
       <Card>
         <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Brand</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((product) => (
-                    <TableRow key={product.id}>
-                      <TableCell>
-                        <div className="flex flex-row gap-4 items-center">
-                          <ImageHolder
-                            src={BASE_ITEMS_IMAGE_URL + product.image || ""}
-                            alt={product.name}
-                            width={100}
-                            height={100}
-                            className="rounded"
-                          />
-                          <span className="font-medium">{product.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{product.brand || "N/A"}</TableCell>
-                      <TableCell>{product.category || "N/A"}</TableCell>
-                      <TableCell>{formatPrice(product.price)}</TableCell>
-                      <TableCell>
-                        <StarRating rating={product.rating} readOnly />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleView(product)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            asChild
-                            variant="outline"
-                            color="green"
-                            size="sm"
-                          >
-                            <Link
-                              href={addSlug(`/products/edit/${product.id}`)}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Link>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            color="red"
-                            size="sm"
-                            onClick={() => handleDelete(product)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <AppPagination
-                initialPage={page}
-                total={totalPages}
-                onChangePage={changePage}
-              />
-            </>
-          )}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Brand</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Rating</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell>
+                    <div className="flex flex-row gap-4 items-center">
+                      <ImageHolder
+                        src={BASE_ITEMS_IMAGE_URL + product.image || ""}
+                        alt={product.name}
+                        width={100}
+                        height={100}
+                        className="rounded"
+                      />
+                      <span className="font-medium">{product.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{product.brand || "N/A"}</TableCell>
+                  <TableCell>{product.category || "N/A"}</TableCell>
+                  <TableCell>{formatPrice(product.price)}</TableCell>
+                  <TableCell>
+                    <StarRating rating={product.rating} readOnly />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleView(product)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button asChild variant="outline" color="green" size="sm">
+                        <Link href={addSlug(`/products/edit/${product.id}`)}>
+                          <Edit className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        color="red"
+                        size="sm"
+                        onClick={() => handleDelete(product)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <AppPagination
+            initialPage={page}
+            total={totalPages}
+            onChangePage={changePage}
+          />
         </CardContent>
       </Card>
 

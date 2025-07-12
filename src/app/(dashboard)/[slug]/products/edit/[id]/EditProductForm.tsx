@@ -40,7 +40,6 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     register,
     handleSubmit,
     control,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
     resolver: zodResolver(fullProductSchema),
@@ -73,7 +72,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
 
       if (result.success && result.data) {
         console.log({ productResult: result.data })
-        for (let [i, variant] of result.data.variants.entries()) {
+        for (const [i, variant] of result.data.variants.entries()) {
           if (variantImageFiles[i]) {
             const updateResult = await updateProductVariantImageAction(
               variant.id,

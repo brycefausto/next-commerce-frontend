@@ -26,7 +26,6 @@ import useSlug from "@/hooks/use-slug"
 import { formatPrice } from "@/lib/stringUtils"
 import { InventoryItem } from "@/models/inventory"
 import { useAlertModal } from "@/providers/alert.modal.provider"
-import { useInventoryStore } from "@/stores/inventory-store"
 import { ListComponentProps } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Edit, Eye, Plus, SearchIcon, Trash2 } from "lucide-react"
@@ -52,10 +51,11 @@ export default function InventoryList({
     handleSearchChange,
     handleSearchEnter,
   } = usePageUtils(search)
-  const { loading, setLoading } = useInventoryStore()
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | undefined | null>()
+  const [selectedItem, setSelectedItem] = useState<
+    InventoryItem | undefined | null
+  >()
   const { showDeleteModal } = useAlertModal()
 
   const {
@@ -186,88 +186,80 @@ export default function InventoryList({
 
       <Card>
         <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead>Variant</TableHead>
-                    <TableHead>SKU</TableHead>
-                    <TableHead>Current Stock</TableHead>
-                    <TableHead>Min Stock</TableHead>
-                    <TableHead>Max Stock</TableHead>
-                    <TableHead>Price</TableHead>
-                    {/* <TableHead>Location</TableHead> */}
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Product</TableHead>
+                <TableHead>Variant</TableHead>
+                <TableHead>SKU</TableHead>
+                <TableHead>Current Stock</TableHead>
+                <TableHead>Min Stock</TableHead>
+                <TableHead>Max Stock</TableHead>
+                <TableHead>Price</TableHead>
+                {/* <TableHead>Location</TableHead> */}
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {inventory.map((item) => {
+                const stockStatus = getStockStatus(item)
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-medium">
+                      {item.product?.name}
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {item.variant?.name}
+                    </TableCell>
+                    <TableCell>{item.variant?.sku}</TableCell>
+                    <TableCell>{item.stock}</TableCell>
+                    <TableCell>{item.minStock}</TableCell>
+                    <TableCell>{item.maxStock}</TableCell>
+                    <TableCell>{formatPrice(item.price)}</TableCell>
+                    {/* <TableCell>{item.location || "N/A"}</TableCell> */}
+                    <TableCell>
+                      <Badge variant={stockStatus.variant}>
+                        {stockStatus.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleView(item)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          color="green"
+                          size="sm"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          color="red"
+                          size="sm"
+                          onClick={() => handleDelete(item)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {inventory.map((item) => {
-                    const stockStatus = getStockStatus(item)
-                    return (
-                      <TableRow key={item.id}>
-                        <TableCell className="font-medium">
-                          {item.product?.name}
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {item.variant?.name}
-                        </TableCell>
-                        <TableCell>{item.variant?.sku}</TableCell>
-                        <TableCell>{item.stock}</TableCell>
-                        <TableCell>{item.minStock}</TableCell>
-                        <TableCell>{item.maxStock}</TableCell>
-                        <TableCell>{formatPrice(item.price)}</TableCell>
-                        {/* <TableCell>{item.location || "N/A"}</TableCell> */}
-                        <TableCell>
-                          <Badge variant={stockStatus.variant}>
-                            {stockStatus.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleView(item)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              color="green"
-                              size="sm"
-                              onClick={() => handleEdit(item)}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              color="red"
-                              size="sm"
-                              onClick={() => handleDelete(item)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-              <AppPagination
-                initialPage={page}
-                total={totalPages}
-                onChangePage={changePage}
-              />
-            </>
-          )}
+                )
+              })}
+            </TableBody>
+          </Table>
+          <AppPagination
+            initialPage={page}
+            total={totalPages}
+            onChangePage={changePage}
+          />
         </CardContent>
       </Card>
 

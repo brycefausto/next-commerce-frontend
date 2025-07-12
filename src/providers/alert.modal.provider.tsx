@@ -21,12 +21,12 @@ export interface IAlertModalContext {
 
 export const AlertModalContext = createContext<IAlertModalContext>({
   show: false,
-  setShow: (showModal: boolean) => {},
+  setShow: () => {},
   type: ModalType.CONFIRM,
-  setType: (type: ModalType) => {},
-  setTitle: (title: string) => {},
-  setMessage: (message: string) => {},
-  setOnConfirm: (callback: () => ConfirmCallback) => {},
+  setType: () => {},
+  setTitle: () => {},
+  setMessage: () => {},
+  setOnConfirm: () => {},
 })
 
 export function useAlertModal() {

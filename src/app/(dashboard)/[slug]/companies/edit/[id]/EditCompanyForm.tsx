@@ -64,7 +64,7 @@ export default function EditCompanyForm({ company }: EditCompanyFormProps) {
   useEffect(() => {
     const slug = slugify(name)
     setValue("slug", slug)
-  }, [name])
+  }, [name, setValue])
 
   const onSubmit = async (data: UpdateCompanyData) => {
     try {

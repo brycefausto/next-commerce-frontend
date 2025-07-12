@@ -42,7 +42,7 @@ export function CompanyForm() {
   useEffect(() => {
     const slug = slugify(name)
     setValue("slug", slug)
-  }, [name])
+  }, [name, setValue])
 
   const onSubmit = (data: CreateCompanyData) => {
     setCompanyData(data)

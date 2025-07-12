@@ -211,9 +211,9 @@ export default function Homepage() {
                   ))}
                 </div>
                 <p className="mb-4">
-                  "Next Commerce transformed our business operations. We went
+                  &quot;Next Commerce transformed our business operations. We went
                   from managing everything in spreadsheets to having a complete
-                  overview of our inventory and sales."
+                  overview of our inventory and sales.&quot;
                 </p>
                 <div className="flex items-center">
                   {/* <Image
@@ -244,9 +244,9 @@ export default function Homepage() {
                   ))}
                 </div>
                 <p className="mb-4">
-                  "The integrated online store feature helped us launch our
+                  &quot;The integrated online store feature helped us launch our
                   e-commerce presence in just days. Sales have increased by 40%
-                  since we started using Next Commerce."
+                  since we started using Next Commerce.&quot;
                 </p>
                 <div className="flex items-center">
                   {/* <Image
@@ -277,9 +277,9 @@ export default function Homepage() {
                   ))}
                 </div>
                 <p className="mb-4">
-                  "The analytics and reporting features give us insights we
+                  &quot;The analytics and reporting features give us insights we
                   never had before. We can now make data-driven decisions about
-                  our inventory and pricing."
+                  our inventory and pricing.&quot;
                 </p>
                 <div className="flex items-center">
                   {/* <Image

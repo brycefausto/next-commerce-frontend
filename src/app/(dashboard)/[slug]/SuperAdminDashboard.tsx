@@ -12,12 +12,12 @@ import { CountReportSuperAdmin } from "@/models/report"
 import { Building2, Users } from "lucide-react"
 import Link from "next/link"
 
-export interface SuperAdminDashboardProps extends CountReportSuperAdmin {}
+// export interface SuperAdminDashboardProps extends CountReportSuperAdmin {}
 
 export default function SuperAdminDashboard({
   userCount,
   companyCount,
-}: SuperAdminDashboardProps) {
+}: CountReportSuperAdmin) {
   const { addSlug } = useSlug()
 
   const statCards = [

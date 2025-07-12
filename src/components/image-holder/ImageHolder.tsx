@@ -25,7 +25,7 @@ export default function ImageHolder({
     if (srcProp !== src) {
       setSrc(srcProp || placeholder)
     }
-  }, [srcProp])
+  }, [src, srcProp])
 
   return (
     <Skeleton loading={loading}>

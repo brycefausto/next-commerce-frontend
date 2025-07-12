@@ -1,5 +1,6 @@
 "use client"
 
+import { AppPagination } from "@/components/app-pagination"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -34,15 +35,19 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import usePageUtils from "@/hooks/use-page-utils"
-import useSlug from "@/hooks/use-slug"
 import { isoToDateString } from "@/lib/dateUtils"
 import { formatPrice } from "@/lib/stringUtils"
-import { Order, OrderStatus, orderStatuses } from "@/models/order"
+import {
+  Order,
+  OrderCountReport,
+  OrderStatus,
+  orderStatuses,
+} from "@/models/order"
 import { PaymentStatus, paymentStatuses } from "@/models/payment"
 import { useAlertModal } from "@/providers/alert.modal.provider"
 import { ListComponentProps } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Edit, Eye, Package, Trash2 } from "lucide-react"
+import { Edit, Eye, Package, SearchIcon, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -53,8 +58,9 @@ export default function OrderList({
   data,
   page,
   search,
-}: ListComponentProps<Order>) {
-  const { addSlug } = useSlug()
+  countReport,
+}: ListComponentProps<Order> & { countReport: OrderCountReport }) {
+  // const { addSlug } = useSlug()
   const orders = data.docs || []
   const totalPages = data.totalPages || 0
   const {
@@ -63,8 +69,7 @@ export default function OrderList({
     handleSearchChange,
     handleSearchClick,
     handleSearchEnter,
-  } = usePageUtils()
-  const [loading, setLoading] = useState(false)
+  } = usePageUtils(search)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
@@ -74,7 +79,6 @@ export default function OrderList({
     register,
     handleSubmit,
     reset,
-    getValues,
     setValue,
     formState: { errors },
   } = useForm<EditOrderData>({
@@ -175,6 +179,22 @@ export default function OrderList({
     }
   }
 
+  const getCountByStatus = (status: OrderStatus) => {
+    switch (status) {
+      case OrderStatus.PENDING:
+        return countReport.pendingCount
+      case OrderStatus.SHIPPED:
+        return countReport.shippedCount
+      case OrderStatus.DELIVERED:
+        return countReport.deliveredCount
+      case OrderStatus.CANCELLED:
+        return countReport.cancelledCount
+      case OrderStatus.REFUNDED:
+      default:
+        return countReport.refundedCount
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -184,11 +204,33 @@ export default function OrderList({
             Manage customer orders and track their status
           </p>
         </div>
+        <div className="flex items-center space-x-2">
+          <div className="flex flex-row">
+            <Input
+              name="search"
+              placeholder="Search"
+              value={searchValue}
+              endContent={
+                <Button variant="ghost" onClick={handleSearchClick}>
+                  <SearchIcon />
+                </Button>
+              }
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchEnter}
+            />
+          </div>
+          {/* <Button asChild>
+            <Link href={addSlug("/order/create")}>
+              <Plus className="mr-2 h-4 w-4" />
+              Create Order
+            </Link>
+          </Button> */}
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        {["pending", "processing", "completed", "cancelled"].map((status) => {
-          const count = orders.filter((order) => order.status === status).length
+        {orderStatuses.map((status) => {
+          const count = getCountByStatus(status)
           return (
             <Card key={status}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -211,97 +253,96 @@ export default function OrderList({
           <CardDescription>A list of all customer orders.</CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Payment Method</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Payment Status</TableHead>
-                  <TableHead>Tracking ID</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Actions</TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead>Payment Method</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Payment Status</TableHead>
+                <TableHead>Tracking ID</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell className="font-medium">#{order.id}</TableCell>
+                  <TableCell>
+                    <div>
+                      <div className="font-medium">
+                        {order.customer?.fullName}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {order.customer?.email}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>{formatPrice(order.total)}</TableCell>
+                  <TableCell className="capitalize">
+                    {order?.payment?.paymentMethod}
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={getStatusVariant(order.status)}
+                      color={getStatusColor(order.status)}
+                    >
+                      {order.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={getStatusVariant(
+                        order.payment?.status || PaymentStatus.NONE,
+                      )}
+                      color={getPaymentStatusColor(
+                        order.payment?.status || PaymentStatus.NONE,
+                      )}
+                    >
+                      {order.payment?.status || PaymentStatus.NONE}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{order.trackingId}</TableCell>
+                  <TableCell>{isoToDateString(order.createdAt)}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleView(order)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        color="green"
+                        size="sm"
+                        onClick={() => handleEdit(order)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        color="red"
+                        size="sm"
+                        onClick={() => handleDelete(order)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">#{order.id}</TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">
-                          {order.customer?.fullName}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {order.customer?.email}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>${order.total.toFixed(2)}</TableCell>
-                    <TableCell className="capitalize">
-                      {order?.payment?.paymentMethod}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={getStatusVariant(order.status)}
-                        color={getStatusColor(order.status)}
-                      >
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={getStatusVariant(
-                          order.payment?.status || PaymentStatus.NONE,
-                        )}
-                        color={getPaymentStatusColor(
-                          order.payment?.status || PaymentStatus.NONE,
-                        )}
-                      >
-                        {order.payment?.status || PaymentStatus.NONE}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{order.trackingId}</TableCell>
-                    <TableCell>{isoToDateString(order.createdAt)}</TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleView(order)}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          color="green"
-                          size="sm"
-                          onClick={() => handleEdit(order)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          color="red"
-                          size="sm"
-                          onClick={() => handleDelete(order)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+              ))}
+            </TableBody>
+          </Table>
+          <AppPagination
+            initialPage={page}
+            total={totalPages}
+            onChangePage={changePage}
+          />
         </CardContent>
       </Card>
 

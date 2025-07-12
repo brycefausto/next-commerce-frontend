@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import serverFetch, { getErrorMessage } from '@/lib/serverFetch';
 import { Product } from '@/models/product';
 import { useCompanyContext } from '@/stores/company.store';

@@ -1,6 +1,6 @@
 "use client"
 
-import { logout } from "@/app/(auth)/login/actions";
+import { logoutAction } from "@/app/(auth)/login/actions";
 import { useCompanyContext } from "@/stores/company.store";
 import { useUserContext } from "@/stores/user.store";
 import Link from "next/link";
@@ -42,7 +42,7 @@ export default function AppNavbar() {
               <DropdownMenuItem key="system">System</DropdownMenuItem>
               <DropdownMenuItem key="configurations">Configurations</DropdownMenuItem>
               <DropdownMenuItem key="help_and_feedback">Help & Feedback</DropdownMenuItem>
-              <DropdownMenuItem key="logout" color="danger" onClick={() => logout()}>
+              <DropdownMenuItem key="logout" color="danger" onClick={() => logoutAction()}>
                 Log Out
               </DropdownMenuItem>
             </DropdownMenuContent>

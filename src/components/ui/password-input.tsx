@@ -12,7 +12,7 @@ const PasswordInput = React.forwardRef<
     endContent?: React.ReactNode
     style?: React.CSSProperties
   }
->(({ endContent, ...props }, ref) => {
+>(({ ...props }, ref) => {
   const [visible, setVisible] = React.useState(false)
   return (
     <Input

@@ -47,7 +47,6 @@ export default function ProductDetailsForm({ product }: ProductDetailsProps) {
     useState<ProductVariantDto | null>()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [quantity, setQuantity] = useState(1)
-  const [maxQuantity, setMaxQuantity] = useState(1)
 
   const handleAddToCart = (product: ProductVariant, quantity: number) => {
     console.log("handleAddToCart", quantity)
@@ -121,7 +120,6 @@ export default function ProductDetailsForm({ product }: ProductDetailsProps) {
                     onClick={() => {
                       setDialogOpen(true)
                       setSelectedVariant(product.defaultVariant)
-                      setMaxQuantity(product.defaultVariant?.stock || 0)
                     }}
                   >
                     <FaCartPlus className="w-4 h-4" />
@@ -172,7 +170,6 @@ export default function ProductDetailsForm({ product }: ProductDetailsProps) {
                               onClick={() => {
                                 setDialogOpen(true)
                                 setSelectedVariant(variant)
-                                setMaxQuantity(variant.stock)
                               }}
                               disabled={variant.stock <= 0}
                             >

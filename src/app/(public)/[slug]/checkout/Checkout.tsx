@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client"
 
 import ImageHolder from "@/components/image-holder/ImageHolder"
@@ -57,8 +55,7 @@ export default function Checkout() {
 
   // Calculate cart totals
   const subtotal = mounted ? getCartTotal() : 0
-  const shipping =
-    subtotal > 0 ? getShippingFee(shippingMethod) : 0
+  const shipping = subtotal > 0 ? getShippingFee(shippingMethod) : 0
   const total = mounted ? subtotal + shipping : 0
 
   // Don't render cart items until after hydration

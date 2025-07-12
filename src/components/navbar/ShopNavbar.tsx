@@ -1,6 +1,6 @@
 "use client"
 
-import { logout } from "@/app/(auth)/login/actions"
+import { logoutAction } from "@/app/(auth)/login/actions"
 import { useCartStore } from "@/stores/cart.store"
 import { useCompanyContext } from "@/stores/company.store"
 import { useUserContext } from "@/stores/user.store"
@@ -85,7 +85,7 @@ export default function ShopNavbar() {
                 <DropdownMenuItem
                   key="logout"
                   color="danger"
-                  onClick={() => logout()}
+                  onClick={() => logoutAction()}
                 >
                   Log Out
                 </DropdownMenuItem>

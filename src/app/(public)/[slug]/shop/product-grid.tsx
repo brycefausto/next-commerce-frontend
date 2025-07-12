@@ -1,17 +1,16 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 
-import { Input } from "@/components/ui/input"
-import { ProductCard } from "./product-card"
-import { Product } from "@/models/product"
-import useSlug from "@/hooks/use-slug"
-import { PaginatedDocument } from "@/models"
-import usePageUtils from "@/hooks/use-page-utils"
 import { AppPagination } from "@/components/app-pagination"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import usePageUtils from "@/hooks/use-page-utils"
+import useSlug from "@/hooks/use-slug"
+import { PaginatedDocument } from "@/models"
+import { Product } from "@/models/product"
 import { SearchIcon } from "lucide-react"
+import { ProductCard } from "./product-card"
 
 export interface ProductGridProps {
   data: PaginatedDocument<Product>
@@ -28,7 +27,7 @@ export function ProductGrid({ data, page, search }: ProductGridProps) {
     handleSearchChange,
     handleSearchClick,
     handleSearchEnter,
-  } = usePageUtils()
+  } = usePageUtils(search)
   const { addSlug } = useSlug()
 
   return (

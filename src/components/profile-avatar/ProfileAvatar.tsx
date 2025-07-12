@@ -22,7 +22,7 @@ export default function ProfileAvatar({
 }: ProfileAvatarProps) {
   const imageSrc = useMemo(
     () => (src ? baseUrl + src : DEFAULT_PROFILE_IMAGE),
-    [src]
+    [src, baseUrl]
   );
   const initials = useMemo(() => getInitials(name || ""), [name]);
   const [loading, setLoading] = useState(true);

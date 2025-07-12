@@ -173,7 +173,6 @@ export default function Component() {
   ] as const
 
   const sizes = ["sm", "default", "lg", "xl"] as const
-  const variants = ["default", "outline", "soft", "secondary"] as const
 
   const removeBadge = (id: number) => {
     setBadges(badges.filter((badge) => badge.id !== id))

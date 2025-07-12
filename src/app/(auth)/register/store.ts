@@ -43,7 +43,7 @@ const DEFAULT_FORM_VALUES = {
   userData: EMPTY_USER,
 }
 
-export const useFormStore = create<FormStore>((set, get) => ({
+export const useFormStore = create<FormStore>((set) => ({
   ...DEFAULT_FORM_VALUES,
   setCurrentStep: (step) => set({ currentStep: step }),
   setCompanyData: (data) =>

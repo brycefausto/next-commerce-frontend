@@ -110,10 +110,18 @@ export interface UpdateOrderStatusDto {
   trackingId?: string
 }
 
-export class OrderQueryParams {
+export interface OrderQueryParams {
   page?: number
   limit?: number
   dateFrom?: string
   dateTo?: string
   search?: string
+}
+
+export interface OrderCountReport {
+  pendingCount: number
+  shippedCount: number
+  deliveredCount: number
+  cancelledCount: number
+  refundedCount: number
 }

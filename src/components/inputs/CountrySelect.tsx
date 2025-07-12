@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import countries from "@/data/countries"
 import { getErrorMessage } from "@/lib/serverFetch"
 import { SelectOption } from "@/types"

@@ -13,15 +13,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { APP_NAME } from "@/config/env"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { loginAction } from "./actions"
 import { LoginData, loginSchema } from "./loginSchema"
-import Link from "next/link"
 
 export default function LoginPage() {
-  const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
   const {

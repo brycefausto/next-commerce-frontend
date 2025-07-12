@@ -1,4 +1,4 @@
-export default [
+const countries = [
   "Afghanistan",
   "Albania",
   "Algeria",
@@ -195,3 +195,5 @@ export default [
   "Zambia",
   "Zimbabwe",
 ]
+
+export default countries

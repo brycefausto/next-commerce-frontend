@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppUser, UserRole } from "@/models/user"
 import { companyService } from "@/services/company.service"
 import { userService } from "@/services/user.service"
@@ -72,7 +71,6 @@ export async function getUserFromSession() {
   const session = (await cookies()).get("session")?.value
   try {
     const payload = await decrypt(session)
-    1
     if (payload) {
       const id = payload.userId as string | undefined
 

@@ -45,7 +45,6 @@ export default function MultiVariantForm({
     register,
     handleSubmit,
     control,
-    reset,
     subscribe,
     formState: { errors, isSubmitting },
   } = useForm<MultiVariantFormData>({

@@ -1,4 +1,3 @@
-import { UserRole } from "@/models/user"
 import { z } from "zod"
 
 export const createCompanySchema = z.object({
@@ -32,5 +31,8 @@ export const createUserSchema = z
     path: ["confirmPassword"],
   })
 
-export type CreateCompanyData = z.output<typeof createCompanySchema> & { logoUrl?: string, logoFile?: File }
+export type CreateCompanyData = z.output<typeof createCompanySchema> & {
+  logoUrl?: string
+  logoFile?: File
+}
 export type CreateUserData = z.output<typeof createUserSchema>

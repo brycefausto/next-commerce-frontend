@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server"
 
 import { getErrorMessage } from "@/lib/serverFetch"
@@ -41,7 +40,7 @@ export async function loginAction(
   }
 }
 
-export async function logout() {
+export async function logoutAction() {
   await deleteSession()
   redirect("/login")
 }

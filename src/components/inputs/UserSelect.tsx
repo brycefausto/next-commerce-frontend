@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppUser } from '@/models/user'
 import { SelectOption } from '@/types';
 import serverFetch, { getErrorMessage } from '@/lib/serverFetch'

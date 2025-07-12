@@ -2,7 +2,6 @@
 
 import { AppPagination } from "@/components/app-pagination"
 import ImageHolder from "@/components/image-holder/ImageHolder"
-import ProfileAvatar from "@/components/profile-avatar/ProfileAvatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -51,7 +50,6 @@ export default function CompanyList({
     handleSearchChange,
     handleSearchEnter,
   } = usePageUtils(search)
-  const [loading, setLoading] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const { showDeleteModal } = useAlertModal()
@@ -107,86 +105,71 @@ export default function CompanyList({
 
       <Card>
         <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Slug</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Address</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {companies.map((company) => (
-                    <TableRow key={company.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex flex-row gap-4 items-center">
-                          <ImageHolder
-                            src={BASE_COMPANIES_IMAGE_URL + company.logo || ""}
-                            alt={company.name}
-                            width={100}
-                            height={100}
-                            className="rounded"
-                          />
-                          <span className="font-medium">{company.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{company.slug}</TableCell>
-                      <TableCell>{company.email}</TableCell>
-                      <TableCell>{company.phone}</TableCell>
-                      <TableCell>
-                        {addressInfoToString(company.address)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleView(company)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            color="green"
-                            size="sm"
-                            asChild
-                          >
-                            <Link href={addSlug(`/companies/edit/${company.id}`)}>
-                              <EditIcon className="h-4 w-4" />
-                            </Link>
-                          </Button>
-                          {company.id !== currentUser?.id && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              color="red"
-                              onClick={() => handleDelete(company)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <AppPagination
-                initialPage={page}
-                total={totalPages}
-                onChangePage={changePage}
-              />
-            </>
-          )}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Address</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {companies.map((company) => (
+                <TableRow key={company.id}>
+                  <TableCell className="font-medium">
+                    <div className="flex flex-row gap-4 items-center">
+                      <ImageHolder
+                        src={BASE_COMPANIES_IMAGE_URL + company.logo || ""}
+                        alt={company.name}
+                        width={100}
+                        height={100}
+                        className="rounded"
+                      />
+                      <span className="font-medium">{company.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{company.slug}</TableCell>
+                  <TableCell>{company.email}</TableCell>
+                  <TableCell>{company.phone}</TableCell>
+                  <TableCell>{addressInfoToString(company.address)}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleView(company)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" color="green" size="sm" asChild>
+                        <Link href={addSlug(`/companies/edit/${company.id}`)}>
+                          <EditIcon className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                      {company.id !== currentUser?.id && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          color="red"
+                          onClick={() => handleDelete(company)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <AppPagination
+            initialPage={page}
+            total={totalPages}
+            onChangePage={changePage}
+          />
         </CardContent>
       </Card>
 

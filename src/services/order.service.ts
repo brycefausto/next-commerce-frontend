@@ -7,6 +7,7 @@ import {
   CreateOrderDto,
   UpdateOrderDto,
   UpdateOrderStatusDto,
+  OrderCountReport,
 } from "@/models/order"
 import { QueryParams } from "@/types"
 
@@ -34,9 +35,18 @@ class OrderService {
     return data
   }
 
-  count = async (companyId: string) => {
+  count = async (vendorId: string) => {
     const { data } = await serverFetch.get<number>(
-      `${BASE_URL}?companyId=${companyId}`,
+      `${BASE_URL}/count?vendorId=${vendorId}`,
+    )
+
+    return data
+  }
+
+  countReport = async (vendorId: string) => {
+    console.log(`${BASE_URL}/countReport?vendorId=${vendorId}`)
+    const { data } = await serverFetch.get<OrderCountReport>(
+      `${BASE_URL}/countReport?vendorId=${vendorId}`,
     )
 
     return data

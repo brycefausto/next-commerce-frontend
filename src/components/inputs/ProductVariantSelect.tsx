@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getErrorMessage } from '@/lib/serverFetch';
 import { ProductVariant } from '@/models/product';
 import { SelectOption } from '@/types';

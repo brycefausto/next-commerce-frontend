@@ -5,8 +5,8 @@ import FormLayout from "@/components/layouts/FormLayout"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/ui/password-input"
 import {
   Select,
   SelectContent,
@@ -15,16 +15,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { BASE_USERS_IMAGE_URL } from "@/config/env"
+import useSlug from "@/hooks/use-slug"
 import { CreateUserDto, getUserRoles, UserRole } from "@/models/user"
 import { useUserContext } from "@/stores/user.store"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { createUserAction } from "../actions"
 import { CreateUserData, createUserSchema } from "./CreateUserSchema"
-import useSlug from "@/hooks/use-slug"
 
 export default function CreateUserForm() {
   const { slugRouterPush } = useSlug()
@@ -46,7 +45,7 @@ export default function CreateUserForm() {
         ...data,
       }
       if (user?.role == UserRole.ADMIN) {
-        createUserDto.companyId =  user?.company?.id || ""
+        createUserDto.companyId = user?.company?.id || ""
       }
       const result = await createUserAction(createUserDto, imageFile)
       if (result?.success && result?.data) {

@@ -1,6 +1,7 @@
 "use client"
 
 import { AppPagination } from "@/components/app-pagination"
+import ProfileAvatar from "@/components/profile-avatar/ProfileAvatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -21,9 +22,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { BASE_USERS_IMAGE_URL } from "@/config/env"
 import usePageUtils from "@/hooks/use-page-utils"
+import useSlug from "@/hooks/use-slug"
 import { AppUser, UserRole } from "@/models/user"
 import { useAlertModal } from "@/providers/alert.modal.provider"
+import { useUserContext } from "@/stores/user.store"
 import { ListComponentProps } from "@/types"
 import {
   EditIcon,
@@ -36,12 +40,8 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { deleteUserAction } from "./actions"
-import { useUserContext } from "@/stores/user.store"
-import ProfileAvatar from "@/components/profile-avatar/ProfileAvatar"
-import { BASE_USERS_IMAGE_URL } from "@/config/env"
-import useSlug from "@/hooks/use-slug"
 import { toast } from "sonner"
+import { deleteUserAction } from "./actions"
 
 export default function UsersList({
   data,
@@ -60,7 +60,6 @@ export default function UsersList({
     handleSearchChange,
     handleSearchEnter,
   } = usePageUtils(search)
-  const [loading, setLoading] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null)
   const { showDeleteModal } = useAlertModal()
@@ -136,89 +135,74 @@ export default function UsersList({
 
       <Card>
         <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    {isSuperAdmin && <TableHead>Company</TableHead>}
-                    <TableHead>Role</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">
-                        {user.name}
-                        {user.id == currentUser?.id && (
-                          <Badge variant="outline" className="ml-2">
-                            Current User
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      {isSuperAdmin && (
-                        <TableCell>{user.company?.name}</TableCell>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                {isSuperAdmin && <TableHead>Company</TableHead>}
+                <TableHead>Role</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">
+                    {user.name}
+                    {user.id == currentUser?.id && (
+                      <Badge variant="outline" className="ml-2">
+                        Current User
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  {isSuperAdmin && <TableCell>{user.company?.name}</TableCell>}
+                  <TableCell>
+                    <Badge color={getColorByRole(user.role)}>
+                      {user.role === UserRole.SUPER_ADMIN ? (
+                        <Shield className="w-3 h-3 mr-1" />
+                      ) : (
+                        <User className="w-3 h-3 mr-1" />
                       )}
-                      <TableCell>
-                        <Badge color={getColorByRole(user.role)}>
-                          {user.role === UserRole.SUPER_ADMIN ? (
-                            <Shield className="w-3 h-3 mr-1" />
-                          ) : (
-                            <User className="w-3 h-3 mr-1" />
-                          )}
-                          <span>{user.role}</span>
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleView(user)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            color="green"
-                            size="sm"
-                            asChild
-                          >
-                            <Link href={addSlug(`/users/edit/${user.id}`)}>
-                              <EditIcon className="h-4 w-4" />
-                            </Link>
-                          </Button>
-                          {user.id !== currentUser?.id && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              color="red"
-                              onClick={() => handleDelete(user)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <AppPagination
-                initialPage={page}
-                total={totalPages}
-                onChangePage={changePage}
-              />
-            </>
-          )}
+                      <span>{user.role}</span>
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleView(user)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" color="green" size="sm" asChild>
+                        <Link href={addSlug(`/users/edit/${user.id}`)}>
+                          <EditIcon className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                      {user.id !== currentUser?.id && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          color="red"
+                          onClick={() => handleDelete(user)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <AppPagination
+            initialPage={page}
+            total={totalPages}
+            onChangePage={changePage}
+          />
         </CardContent>
       </Card>
 
@@ -254,9 +238,7 @@ export default function UsersList({
               <div>
                 <Label className="text-sm font-medium">Role</Label>
                 <div className="flex items-center">
-                  <Badge
-                    color={getColorByRole(selectedUser.role)}
-                  >
+                  <Badge color={getColorByRole(selectedUser.role)}>
                     {selectedUser.role === UserRole.SUPER_ADMIN ? (
                       <Shield className="w-3 h-3 mr-1" />
                     ) : (

@@ -9,9 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
+import useSlug from "@/hooks/use-slug"
 import { CreateProductDto, ViewProductDto } from "@/models/product"
 import { Package } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import {
@@ -20,7 +20,6 @@ import {
 } from "../actions"
 import MultiVariantForm from "./MultiVariantForm"
 import SingleVariantForm from "./SingleVariantForm"
-import useSlug from "@/hooks/use-slug"
 
 const EMPTY_PRODUCT: ViewProductDto = {
   id: "",
@@ -96,7 +95,7 @@ export default function CreateProductPage() {
       const result = await createProductAction(createDto, imageFile)
 
       if (result.success && result.data) {
-        for (let [i, variant] of result.data.variants.entries()) {
+        for (const [i, variant] of result.data.variants.entries()) {
           const updateResult = await updateProductVariantImageAction(
             variant.id,
             filteredVariantImageFiles[i],
@@ -108,7 +107,7 @@ export default function CreateProductPage() {
       } else if (result.error) {
         toast.error(result.error)
       }
-      // setTimeout(() => slugRouterPush("/products"), 1200)
+      slugRouterPush("/products")
     } catch (e: any) {
       toast.error(e.message || "Failed to create product")
     }

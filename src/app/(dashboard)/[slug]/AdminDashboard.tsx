@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card"
 import useSlug from "@/hooks/use-slug"
 import { CountReportAdmin } from "@/models/report"
-import { useUserContext } from "@/stores/user.store"
 import {
   AlertTriangle,
   Package,
@@ -21,7 +20,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
-export interface AdminDashboardProps extends CountReportAdmin {}
+// export interface AdminDashboardProps extends CountReportAdmin {}
 
 export default function AdminDashboard({
   userCount,
@@ -30,8 +29,7 @@ export default function AdminDashboard({
   orderCount,
   lowStockCount,
   pendingOrdersCount,
-}: AdminDashboardProps) {
-  const { user } = useUserContext()
+}: CountReportAdmin) {
   const { addSlug } = useSlug()
 
   const statCards = [
