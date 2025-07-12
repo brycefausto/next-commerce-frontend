@@ -38,7 +38,7 @@ export async function createUserAction(
 export async function updateUserAction(
   id: string,
   data: UpdateUserDto,
-  imageFile?: File,
+  imageFile?: File | null,
 ): Promise<ActionResultState<AppUser>> {
   const userDto = data
   try {

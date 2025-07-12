@@ -18,6 +18,7 @@ export interface Product {
   description: string
   image: string
   price: number
+  rating: number
   company?: Company
   variants: ProductVariant[]
   defaultVariant?: ProductVariant
@@ -41,6 +42,8 @@ export interface ProductVariantDto {
   image?: string
   price: number
   stock: number
+  minStock: number
+  maxStock: number
 }
 
 export interface CreateProductVariantDto {
@@ -50,6 +53,8 @@ export interface CreateProductVariantDto {
   description?: string
   price: number
   stock: number
+  minStock: number
+  maxStock: number
 }
 
 export interface CreateProductDto {

@@ -38,9 +38,9 @@ class InventoryService {
     return data
   }
 
-  count = async (companyId: string, vendorId?: string) => {
+  count = async (vendorId: string) => {
     const { data } = await serverFetch.get<number>(
-      `${BASE_URL}?companyId=${companyId}${vendorId && "vendorId=" + vendorId}`,
+      `${BASE_URL}/count?vendorId=${vendorId}`,
     )
 
     return data

@@ -199,12 +199,12 @@ export default function CompanyList({
           </DialogHeader>
           {selectedCompany && (
             <div className="space-y-4">
-              <div className="w-[100px] h-[100px]">
-                <ProfileAvatar
-                  baseUrl={BASE_COMPANIES_IMAGE_URL}
-                  src={selectedCompany.logo}
-                  name={selectedCompany.name}
-                  size={100}
+              <div>
+                <ImageHolder
+                  src={BASE_COMPANIES_IMAGE_URL + selectedCompany.logo}
+                  alt={selectedCompany.name}
+                  width={150}
+                  height={150}
                 />
               </div>
               <div>

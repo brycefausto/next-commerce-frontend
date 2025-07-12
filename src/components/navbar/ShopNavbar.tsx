@@ -1,6 +1,6 @@
 "use client"
 
-import { logout } from "@/app/login/actions"
+import { logout } from "@/app/(auth)/login/actions"
 import { useCartStore } from "@/stores/cart.store"
 import { useCompanyContext } from "@/stores/company.store"
 import { useUserContext } from "@/stores/user.store"

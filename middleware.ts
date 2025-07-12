@@ -25,50 +25,50 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.filter(path => pathMatcher(path, pathname)).length > 0;
   const isPublicRoute = publicRoutes.filter(path => pathMatcher(path, pathname)).length > 0 || pathname == "/";
 
-  // if (isProtectedRoute || isPublicRoute) {
-  //   const serverCookies = await cookies();
-  //   const cookie = serverCookies.get("session")?.value;
-  //   const payload = await decrypt(cookie);
+  if (isProtectedRoute || isPublicRoute) {
+    const serverCookies = await cookies();
+    const cookie = serverCookies.get("session")?.value;
+    const payload = await decrypt(cookie);
 
-  //   let user: AppUser | undefined | null = null
+    let user: AppUser | undefined | null = null
 
-  //   if (payload?.userId) {
-  //     user = await getUserFromSession()
-  //   }
+    if (payload?.userId) {
+      user = await getUserFromSession()
+    }
 
-  //   if (isProtectedRoute && !payload?.userId) {
-  //     return NextResponse.redirect(new URL("/login", request.nextUrl));
-  //   }
+    if (isProtectedRoute && !payload?.userId) {
+      return NextResponse.redirect(new URL("/login", request.nextUrl));
+    }
 
-  //   if (pathname.startsWith("/admin")) {
-  //     if (!user) {
-  //       // serverCookies.delete("session");
+    if (pathname.startsWith("/admin")) {
+      if (!user) {
+        // serverCookies.delete("session");
 
-  //       return NextResponse.redirect(new URL("/login", request.nextUrl));
-  //     }
+        return NextResponse.redirect(new URL("/login", request.nextUrl));
+      }
 
-  //     if (user.role != UserRole.SUPER_ADMIN) {
-  //       return NextResponse.redirect(new URL(`/${user.company?.slug}/dashboard`, request.nextUrl));
-  //     }
-  //   }
+      if (user.role != UserRole.SUPER_ADMIN) {
+        return NextResponse.redirect(new URL(`/${user.company?.slug}/dashboard`, request.nextUrl));
+      }
+    }
 
-    // if (isPublicRoute) {
-    //   if (!user) {
-    //     console.log("session deleted")
-    //     serverCookies.delete("session");
+    if (isPublicRoute) {
+      if (!user) {
+        console.log("session deleted")
+        serverCookies.delete("session");
 
-    //     if (pathname != "/login") {
-    //       return NextResponse.redirect(new URL("/login", request.nextUrl));
-    //     }
-    //   } else {
-    //     if (user.role != UserRole.SUPER_ADMIN) {
-    //       return NextResponse.redirect(new URL(`/${user.company?.slug}/dashboard`, request.nextUrl));
-    //     }
+        if (pathname != "/login") {
+          return NextResponse.redirect(new URL("/login", request.nextUrl));
+        }
+      } else {
+        if (user.role != UserRole.SUPER_ADMIN) {
+          return NextResponse.redirect(new URL(`/${user.company?.slug}/dashboard`, request.nextUrl));
+        }
 
-    //     return NextResponse.redirect(new URL("/admin/dashboard", request.nextUrl));
-    //   }
-    // }
-  // }
+        return NextResponse.redirect(new URL("/admin/dashboard", request.nextUrl));
+      }
+    }
+  }
 
   return NextResponse.next()
 }

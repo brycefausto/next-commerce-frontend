@@ -28,9 +28,9 @@ export async function updateItemAction(id: string, data: UpdateInventoryItemDto)
   try {
     await inventoryService.update(id, data)
   } catch (error: any) {
-    console.log({ error: error.message })
+    console.log({ error: getErrorMessage(error) })
     return {
-      error: error.message,
+      error: getErrorMessage(error)
     };
   }
   revalidatePath("/inventory")

@@ -12,7 +12,6 @@ import {
   Users,
   Zap,
 } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
@@ -217,13 +216,13 @@ export default function Homepage() {
                   overview of our inventory and sales."
                 </p>
                 <div className="flex items-center">
-                  <Image
+                  {/* <Image
                     src="/placeholder.svg?height=40&width=40"
                     alt="Sarah Johnson"
                     width={40}
                     height={40}
                     className="rounded-full mr-3"
-                  />
+                  /> */}
                   <div>
                     <p className="font-semibold">Sarah Johnson</p>
                     <p className="text-sm text-muted-foreground">
@@ -250,13 +249,13 @@ export default function Homepage() {
                   since we started using Next Commerce."
                 </p>
                 <div className="flex items-center">
-                  <Image
+                  {/* <Image
                     src="/placeholder.svg?height=40&width=40"
                     alt="Mike Chen"
                     width={40}
                     height={40}
                     className="rounded-full mr-3"
-                  />
+                  /> */}
                   <div>
                     <p className="font-semibold">Mike Chen</p>
                     <p className="text-sm text-muted-foreground">
@@ -283,13 +282,13 @@ export default function Homepage() {
                   our inventory and pricing."
                 </p>
                 <div className="flex items-center">
-                  <Image
+                  {/* <Image
                     src="/placeholder.svg?height=40&width=40"
                     alt="Emily Rodriguez"
                     width={40}
                     height={40}
                     className="rounded-full mr-3"
-                  />
+                  /> */}
                   <div>
                     <p className="font-semibold">Emily Rodriguez</p>
                     <p className="text-sm text-muted-foreground">
@@ -381,7 +380,9 @@ export default function Homepage() {
                     API access
                   </li>
                 </ul>
-                <Button className="w-full mt-6">Start Free Trial</Button>
+                <Button className="w-full mt-6" asChild>
+                  <Link href="/register">Start Free Trial</Link>
+                </Button>
               </CardContent>
             </Card>
 

@@ -27,9 +27,9 @@ export async function createProductAction(
 
     return { success: true, data: product }
   } catch (error: any) {
-    console.log({ error: error.message })
+    console.log({ error: getErrorMessage(error) })
     return {
-      error: error.message,
+      error: getErrorMessage(error),
     }
   }
 }

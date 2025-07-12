@@ -44,7 +44,9 @@ export default function CreateUserForm() {
     try {
       const createUserDto: CreateUserDto = {
         ...data,
-        companyId: user?.company?.id || "",
+      }
+      if (user?.role == UserRole.ADMIN) {
+        createUserDto.companyId =  user?.company?.id || ""
       }
       const result = await createUserAction(createUserDto, imageFile)
       if (result?.success && result?.data) {

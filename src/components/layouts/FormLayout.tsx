@@ -9,7 +9,7 @@ export default function FormLayout({ children, backUrl }: PropsWithChildren & { 
   const router = useRouter()
   return (
     <div className="flex flex-col">
-      <div className="w-full max-w-md flex items-center mb-4 sticky top-0">
+      <div className="w-full max-w-4xl flex items-center mb-4 sticky top-0">
         <Button
           variant="outline"
           size="icon"

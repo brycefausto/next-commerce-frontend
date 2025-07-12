@@ -1,6 +1,7 @@
 "use client"
 
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import ImageSelector from "@/components/image-holder/ImageSelector"
+import FormLayout from "@/components/layouts/FormLayout"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,32 +13,28 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { BASE_COMPANIES_IMAGE_URL } from "@/config/env"
+import useSlug from "@/hooks/use-slug"
 import { slugify } from "@/lib/stringUtils"
 import { Company, UpdateCompanyDto } from "@/models/company"
 import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  Building2,
-  CheckCircle,
-  Globe,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react"
+import { Building2, Globe, Mail, MapPin, Phone } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { updateCompanyAction } from "../../actions"
 import {
   updateCompanySchema,
   type UpdateCompanyData,
 } from "./UpdateCompanySchema"
-import { updateCompanyAction } from "../../actions"
-import FormLayout from "@/components/layouts/FormLayout"
 
 interface EditCompanyFormProps {
   company: Company
 }
 
 export default function EditCompanyForm({ company }: EditCompanyFormProps) {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const { slugRouterPush } = useSlug()
+  const [imageFile, setImageFile] = useState<File | undefined | null>()
 
   const {
     register,
@@ -86,11 +83,15 @@ export default function EditCompanyForm({ company }: EditCompanyFormProps) {
           country: data.country,
         },
       }
-      await updateCompanyAction(company.id, updateDto)
-      setSuccessMessage("Company information updated successfully!")
-      setTimeout(() => setSuccessMessage(null), 3000)
-    } catch (err) {
-      console.error("Failed to update company:", err)
+      const result = await updateCompanyAction(company.id, updateDto, imageFile)
+      if (result?.success && result?.data) {
+        toast.success("Company information updated successfully!")
+        slugRouterPush("/companies")
+      } else {
+        toast.error(result?.error || "Failed to update company")
+      }
+    } catch (e: any) {
+      console.error("Failed to update company:", e.message)
     }
   }
 
@@ -107,13 +108,6 @@ export default function EditCompanyForm({ company }: EditCompanyFormProps) {
           </div>
         </div>
 
-        {successMessage && (
-          <Alert className="border-green-200 bg-green-50 text-green-800">
-            <CheckCircle className="h-4 w-4" />
-            <AlertDescription>{successMessage}</AlertDescription>
-          </Alert>
-        )}
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Information */}
           <Card>
@@ -128,6 +122,17 @@ export default function EditCompanyForm({ company }: EditCompanyFormProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 col-span-2">
+                  <ImageSelector
+                    baseUrl={BASE_COMPANIES_IMAGE_URL}
+                    required
+                    image={company.logo || ""}
+                    onChangeFile={setImageFile}
+                    width={200}
+                    height={200}
+                    className="border-2 border-gray-200"
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="name">Company Name *</Label>
                   <Input

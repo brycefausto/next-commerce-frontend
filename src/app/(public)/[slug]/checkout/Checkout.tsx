@@ -44,10 +44,21 @@ export default function Checkout() {
     useCartStore.persist.rehydrate()
   }, [])
 
+  const getShippingFee = (shippingMethod: string) => {
+    switch (shippingMethod) {
+      case "standard":
+        return 10.0
+      case "express":
+        return 10.0
+      default:
+        return 0
+    }
+  }
+
   // Calculate cart totals
   const subtotal = mounted ? getCartTotal() : 0
   const shipping =
-    subtotal > 0 ? (shippingMethod == "standard" ? 10.0 : 25.0) : 0
+    subtotal > 0 ? getShippingFee(shippingMethod) : 0
   const total = mounted ? subtotal + shipping : 0
 
   // Don't render cart items until after hydration
@@ -317,7 +328,7 @@ export default function Checkout() {
                     onValueChange={setShippingMethod}
                     required
                   >
-                    <div className="flex items-start space-x-3 space-y-0 border rounded-md p-4 mb-3">
+                    {/* <div className="flex items-start space-x-3 space-y-0 border rounded-md p-4 mb-3">
                       <RadioGroupItem value="standard" id="standard" />
                       <div className="grid gap-1.5">
                         <Label htmlFor="standard" className="font-medium">
@@ -327,6 +338,17 @@ export default function Checkout() {
                           Delivery in 3-5 business days
                         </p>
                         <p className="font-medium">{formatPrice(10.0)}</p>
+                      </div>
+                    </div> */}
+                    <div className="flex items-start space-x-3 space-y-0 border rounded-md p-4 mb-3">
+                      <RadioGroupItem value="free" id="free" />
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="free" className="font-medium">
+                          FREE Shipping
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          Delivery in 3-5 business days
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3 space-y-0 border rounded-md p-4 mb-3">
@@ -370,7 +392,7 @@ export default function Checkout() {
                       </div>
                     </div> */}
                     <div className="flex items-center space-x-3 space-y-0 border rounded-md p-4 mb-3">
-                      <RadioGroupItem value="cash" id="cash" />
+                      <RadioGroupItem value="CASH" id="cash" />
                       <Label htmlFor="cash" className="font-medium">
                         Cash
                       </Label>
@@ -382,8 +404,8 @@ export default function Checkout() {
                         />
                       </div>
                     </div>
-                    <div className="flex items-center space-x-3 space-y-0 border rounded-md p-4 mb-3">
-                      <RadioGroupItem value="bank_transfer" id="bank" />
+                    {/* <div className="flex items-center space-x-3 space-y-0 border rounded-md p-4 mb-3">
+                      <RadioGroupItem value="BANK TRANSFER" id="bank" />
                       <Label htmlFor="bank" className="font-medium">
                         Bank Transfer
                       </Label>
@@ -394,7 +416,7 @@ export default function Checkout() {
                           height={100}
                         />
                       </div>
-                    </div>
+                    </div> */}
                     {/* <div className="flex items-center space-x-3 space-y-0 border rounded-md p-4 mb-3">
                       <RadioGroupItem value="paypal" id="paypal" />
                       <Label htmlFor="paypal" className="font-medium">

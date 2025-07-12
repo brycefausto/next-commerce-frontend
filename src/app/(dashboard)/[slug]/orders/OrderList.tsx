@@ -355,6 +355,12 @@ export default function OrderList({
               </div>
 
               <div className="space-y-2">
+                <div className="text-sm">
+                  <span className="font-medium">Payment Method:</span>{" "}
+                  {(selectedOrder?.payment?.paymentMethod || "").toUpperCase()}
+                </div>
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="payment-status">Payment Status</Label>
                 <Select
                   defaultValue={

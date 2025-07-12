@@ -19,11 +19,10 @@ export async function getProductsCountAction(
 }
 
 export async function getInventoryItemsCountAction(
-  companyId: string,
   vendorId: string,
 ): Promise<ActionResultState<number>> {
   try {
-    const count = await inventoryService.count(companyId, vendorId)
+    const count = await inventoryService.count(vendorId)
 
     return { success: true, data: count }
   } catch (error: any) {

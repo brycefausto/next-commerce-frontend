@@ -10,11 +10,6 @@ export async function updateSettingsAction(formData: FormData) {
   await delay(300) // Simulate API call
 
   try {
-    const session = await getSession()
-    if (!session || session.role !== "SuperAdmin") {
-      throw new Error("Unauthorized - Only SuperAdmin can modify settings")
-    }
-
     const data = {
       // General Settings
       siteName: formData.get("siteName") as string,
@@ -25,7 +20,9 @@ export async function updateSettingsAction(formData: FormData) {
       // Business Settings
       currency: formData.get("currency") as string,
       taxRate: Number.parseFloat(formData.get("taxRate") as string),
-      lowStockThreshold: Number.parseInt(formData.get("lowStockThreshold") as string),
+      lowStockThreshold: Number.parseInt(
+        formData.get("lowStockThreshold") as string,
+      ),
 
       // Notification Settings
       emailNotifications: formData.get("emailNotifications") === "true",
@@ -40,13 +37,18 @@ export async function updateSettingsAction(formData: FormData) {
       // Security Settings
       sessionTimeout: Number.parseInt(formData.get("sessionTimeout") as string),
       requireStrongPasswords: formData.get("requireStrongPasswords") === "true",
-      maxLoginAttempts: Number.parseInt(formData.get("maxLoginAttempts") as string),
+      maxLoginAttempts: Number.parseInt(
+        formData.get("maxLoginAttempts") as string,
+      ),
 
       // Shop Settings
       allowGuestCheckout: formData.get("allowGuestCheckout") === "true",
       requirePhoneNumber: formData.get("requirePhoneNumber") === "true",
       autoApproveOrders: formData.get("autoApproveOrders") === "true",
-      defaultOrderStatus: formData.get("defaultOrderStatus") as "pending" | "processing" | "completed",
+      defaultOrderStatus: formData.get("defaultOrderStatus") as
+        | "pending"
+        | "processing"
+        | "completed",
     }
 
     const validatedFields = settingsSchema.parse(data)
@@ -57,7 +59,8 @@ export async function updateSettingsAction(formData: FormData) {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to update settings",
+      error:
+        error instanceof Error ? error.message : "Failed to update settings",
     }
   }
 }
@@ -77,7 +80,8 @@ export async function getSettingsAction() {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch settings",
+      error:
+        error instanceof Error ? error.message : "Failed to fetch settings",
     }
   }
 }

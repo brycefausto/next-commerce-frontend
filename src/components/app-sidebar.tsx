@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { APP_NAME } from "@/config/env"
+import { APP_NAME, BASE_COMPANIES_IMAGE_URL } from "@/config/env"
 import { logoutAction } from "@/lib/actions/auth-actions"
 import { UserRole } from "@/models/user"
 import { useCompanyContext } from "@/stores/company.store"
@@ -34,6 +34,7 @@ import {
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ForwardRefExoticComponent, RefAttributes, useMemo } from "react"
+import AppLogo from "./navbar/AppLogo"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 
 type MenuItem = {
@@ -52,6 +53,10 @@ export function AppSidebar() {
   const { slug, company } = useCompanyContext()
   const isSuperAdmin = user?.role == UserRole.SUPER_ADMIN
   const title = company ? company.name : APP_NAME
+  const logoSrc =
+    user?.role != UserRole.SUPER_ADMIN && company
+      ? BASE_COMPANIES_IMAGE_URL + company?.logo
+      : ""
 
   const menuItems: MenuItem[] = [
     {
@@ -89,12 +94,6 @@ export function AppSidebar() {
       isCompanyMenu: true,
     },
     {
-      title: "Shop",
-      url: `/${slug}/shop`,
-      icon: Store,
-      isCompanyMenu: true,
-    },
-    {
       title: "Settings",
       url: `/${slug}/settings`,
       icon: Settings,
@@ -126,16 +125,19 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="bg-slate-800 text-white shadow-sm">
         <div className="px-4 py-2">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <p className="text-sm text-muted-foreground">Welcome, {user?.name}</p>
+          <div className="flex flex-row gap-2 items-center">
+            <AppLogo src={logoSrc} width={50} height={50} />
+            <h2 className="text-lg font-semibold">{title}</h2>
+          </div>
+          <p className="font-medium">Welcome, {user?.name}</p>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-gray-700 text-white">
         <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">Main Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredMenuItems.map((item) => (
@@ -163,7 +165,7 @@ export function AppSidebar() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" onClick={copyShopURL}>
-                        <Copy />
+                        <Copy className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Copy Shop URL</TooltipContent>

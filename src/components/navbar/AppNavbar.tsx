@@ -1,6 +1,6 @@
 "use client"
 
-import { logout } from "@/app/login/actions";
+import { logout } from "@/app/(auth)/login/actions";
 import { useCompanyContext } from "@/stores/company.store";
 import { useUserContext } from "@/stores/user.store";
 import Link from "next/link";
@@ -14,7 +14,7 @@ export default function AppNavbar() {
   const { company } = useCompanyContext()
 
   return (
-    <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
+    <header className="bg-slate-800 text-white group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <div className="flex">
           <SidebarTrigger className="-ml-1 h-4 w-4" />

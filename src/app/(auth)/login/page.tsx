@@ -1,5 +1,6 @@
 "use client"
 
+import AppLogo from "@/components/navbar/AppLogo"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -10,12 +11,14 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { APP_NAME } from "@/config/env"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { loginAction } from "./actions"
 import { LoginData, loginSchema } from "./loginSchema"
+import Link from "next/link"
 
 export default function LoginPage() {
   const [error, setError] = useState("")
@@ -32,17 +35,25 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginData) => {
     setLoading(true)
 
+    console.log("Submitting login")
     const result = await loginAction(data)
+    console.log("Login Result", result)
 
     if (result.error) {
       toast.error(result.error || "Login failed")
     }
-    
+
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex flex-col gap-2 items-center justify-center bg-gray-50">
+      <div className="flex flex-row gap-2 justify-center items-center">
+        <Link href="/">
+          <AppLogo width={50} height={50} />
+        </Link>
+        <span className="text-2xl font-bold">{APP_NAME}</span>
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Login</CardTitle>

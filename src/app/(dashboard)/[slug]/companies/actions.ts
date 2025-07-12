@@ -41,15 +41,16 @@ export async function createCompanyAction(
 export async function updateCompanyAction(
   id: string,
   data: UpdateCompanyDto,
-  imageFile?: File,
+  imageFile?: File | null,
 ): Promise<ActionResultState> {
   try {
     const company = await companyService.update(id, data)
 
     if (imageFile) {
       const imageUpdateResult = await updateCompanyLogoAction(
-        company.id,
+        id,
         imageFile,
+        company.logo,
       )
       if (imageUpdateResult.error) {
         return {

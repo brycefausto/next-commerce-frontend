@@ -157,11 +157,12 @@ export default function EditProductForm({ product }: EditProductFormProps) {
               )}
             </div>
             <ProductVariantForm
+              imageFiles={variantImageFiles}
               fieldArray={fieldArray}
               register={register}
               errors={errors}
-              onChangeVariantImageFiles={setVariantImageFiles}
-              onDeleteVariant={(id) => {
+              onChangeImageFiles={setVariantImageFiles}
+              onDelete={(id) => {
                 const updatedIds = [...deletedVariantIds]
                 updatedIds.push(id)
                 console.log("setDeletedVariantIds - id", id)

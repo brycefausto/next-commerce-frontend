@@ -1,57 +1,87 @@
 "use client"
 
-import ImageSelector from "@/components/image-holder/ImageSelector"
 import FormLayout from "@/components/layouts/FormLayout"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { BASE_ITEMS_IMAGE_URL } from "@/config/env"
-import { CreateProductDto } from "@/models/product"
-import { useCompanyContext } from "@/stores/company.store"
-import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
+import { CreateProductDto, ViewProductDto } from "@/models/product"
+import { Package } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import {
   createProductAction,
   updateProductVariantImageAction,
 } from "../actions"
-import { fullProductSchema, ProductFormData } from "../ProductSchema"
-import ProductVariantForm from "../ProductVariantForm"
+import MultiVariantForm from "./MultiVariantForm"
+import SingleVariantForm from "./SingleVariantForm"
+import useSlug from "@/hooks/use-slug"
+
+const EMPTY_PRODUCT: ViewProductDto = {
+  id: "",
+  name: "",
+  brand: "",
+  category: "",
+  description: "",
+  image: "",
+  vendorId: "",
+  defaultVariant: {
+    name: "",
+    sku: "",
+    description: "",
+    stock: 1,
+    minStock: 1,
+    maxStock: 100,
+    price: 0,
+    image: "",
+  },
+  variants: [
+    {
+      name: "",
+      sku: "",
+      description: "",
+      stock: 1,
+      minStock: 1,
+      maxStock: 100,
+      price: 0,
+      image: "",
+    },
+  ],
+}
 
 export default function CreateProductPage() {
-  const { company } = useCompanyContext()
-  const router = useRouter()
-  const [success, setSuccess] = useState(false)
+  const { slugRouterPush } = useSlug()
   const [imageFile, setImageFile] = useState<File | undefined>()
   const [variantImageFiles, setVariantImageFiles] = useState<
     (File | undefined)[]
   >([undefined])
+  const [isMultiVariant, setIsMultiVariant] = useState(false)
+  const [product, setProduct] = useState(EMPTY_PRODUCT)
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(fullProductSchema),
-    defaultValues: {
-      variants: [{ name: "", sku: "", description: "", stock: 1, price: 0 }],
-    },
-  })
+  const handleChangeField = (partialFields: Partial<ViewProductDto>) => {
+    setProduct({ ...product, ...partialFields })
+  }
 
-  const fieldArray = useFieldArray({
-    control,
-    name: "variants",
-    keyName: "fieldId",
-  })
+  const handleChangeSingleVariantImage = (file?: File) => {
+    setImageFile(file)
+    if (variantImageFiles.length) {
+      variantImageFiles[0] = file
+    } else {
+      variantImageFiles.push(file)
+    }
+    setVariantImageFiles([...variantImageFiles])
+  }
 
-  const onSubmit = async (data: ProductFormData) => {
-    setSuccess(false)
+  const handleReset = () => {
+    setProduct(EMPTY_PRODUCT)
+  }
+
+  const onSubmit = async (createDto: CreateProductDto) => {
     try {
       if (!imageFile) {
         throw new Error("Image is required.")
@@ -62,10 +92,7 @@ export default function CreateProductPage() {
       if (filteredVariantImageFiles.length !== variantImageFiles.length) {
         throw new Error("Variant Images are missing.")
       }
-      const createDto: CreateProductDto = {
-        ...data,
-        companyId: company?.id || "",
-      }
+
       const result = await createProductAction(createDto, imageFile)
 
       if (result.success && result.data) {
@@ -78,10 +105,10 @@ export default function CreateProductPage() {
             throw new Error(updateResult.error)
           }
         }
+      } else if (result.error) {
+        toast.error(result.error)
       }
-      setSuccess(true)
-      reset()
-      setTimeout(() => router.push("/dashboard/products"), 1200)
+      // setTimeout(() => slugRouterPush("/products"), 1200)
     } catch (e: any) {
       toast.error(e.message || "Failed to create product")
     }
@@ -91,80 +118,49 @@ export default function CreateProductPage() {
     <FormLayout>
       <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>Create Product</CardTitle>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Create New Product
+              </CardTitle>
+              <CardDescription>
+                Add a new product to your inventory with single or multiple
+                variants
+              </CardDescription>
+            </div>
+            <div className="flex flex-1/2 items-center gap-3">
+              <span className="text-sm font-medium">Single Variant</span>
+              <Switch
+                checked={isMultiVariant}
+                onCheckedChange={setIsMultiVariant}
+              />
+              <span className="text-sm font-medium">Multi Variant</span>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-2">
-              <ImageSelector
-                baseUrl={BASE_ITEMS_IMAGE_URL}
-                required
-                onChangeFile={setImageFile}
-                width={200}
-                height={200}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="name">Product Name</Label>
-              <Input
-                id="name"
-                {...register("name")}
-                placeholder="Product name"
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="brand">Brand</Label>
-              <Input id="brand" {...register("brand")} placeholder="Brand" />
-              {errors.brand && (
-                <p className="text-sm text-red-500">{errors.brand.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Input
-                id="category"
-                {...register("category")}
-                placeholder="Category"
-              />
-              {errors.category && (
-                <p className="text-sm text-red-500">
-                  {errors.category.message}
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                {...register("description")}
-                placeholder="Description"
-              />
-              {errors.description && (
-                <p className="text-sm text-red-500">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-            <ProductVariantForm
-              fieldArray={fieldArray}
-              register={register}
-              errors={errors}
-              onChangeVariantImageFiles={setVariantImageFiles}
+          {!isMultiVariant ? (
+            <SingleVariantForm
+              product={product}
+              imageFile={imageFile}
+              onSubmit={onSubmit}
+              onChangeField={handleChangeField}
+              onChangeImageFile={handleChangeSingleVariantImage}
+              onReset={handleReset}
             />
-            {success && (
-              <p className="text-sm text-green-600">
-                Product created successfully! Redirecting...
-              </p>
-            )}
-            <div className="flex justify-end">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Product"}
-              </Button>
-            </div>
-          </form>
+          ) : (
+            <MultiVariantForm
+              product={product}
+              imageFile={imageFile}
+              variantImageFiles={variantImageFiles}
+              onSubmit={onSubmit}
+              onChangeField={handleChangeField}
+              onChangeImageFile={setImageFile}
+              onChangeVariantImageFiles={setVariantImageFiles}
+              onReset={handleReset}
+            />
+          )}
         </CardContent>
       </Card>
     </FormLayout>

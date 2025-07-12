@@ -1,17 +1,18 @@
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react"
-import ImageHolder, { ImageHolderProps } from "./ImageHolder"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Button } from "../ui/button"
 import { CameraIcon } from "lucide-react"
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react"
+import { Button } from "../ui/button"
+import ImageHolder, { ImageHolderProps } from "./ImageHolder"
 
 export interface ImageSelectorProps extends ImageHolderProps {
   baseUrl: string
   image?: string
   required?: boolean
+  file?: File
   onChangeFile?: (file: File, url: string) => void
   onDeleteFile?: (image: string) => void
 }
@@ -21,6 +22,7 @@ export default function ImageSelector({
   baseUrl,
   image,
   required,
+  file: fileProp,
   onChangeFile,
   onDeleteFile,
   ...props
@@ -36,6 +38,14 @@ export default function ImageSelector({
   )
 
   useEffect(() => setImagePreview(imageUrl), [imageUrl])
+  useEffect(() => {
+    if (fileProp) {
+      const fileUrl = URL.createObjectURL(fileProp)
+      setImagePreview(fileUrl)
+    } else {
+      setImagePreview(imageUrl)
+    }
+  }, [fileProp])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -43,7 +53,6 @@ export default function ImageSelector({
     if (files && files.length) {
       const file = files[0]
       const fileUrl = URL.createObjectURL(file)
-
       setImagePreview(fileUrl)
       onChangeFile?.(file, fileUrl)
     }
@@ -57,10 +66,7 @@ export default function ImageSelector({
   }
 
   return (
-    <div
-      className="group relative"
-      style={{ width: props.width, height: props.height }}
-    >
+    <div className="group relative" style={{ maxWidth: props.width }}>
       <ImageHolder src={imagePreview} {...props} />
       <Popover modal={false}>
         <PopoverTrigger asChild>
@@ -81,11 +87,7 @@ export default function ImageSelector({
                 Choose Image
               </Button>
               {!required && (image || imagePreview) && (
-                <Button
-                  variant="outline"
-                  color="red"
-                  onClick={handleDelete}
-                >
+                <Button variant="outline" color="red" onClick={handleDelete}>
                   Delete Image
                 </Button>
               )}

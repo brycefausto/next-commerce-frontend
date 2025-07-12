@@ -53,7 +53,13 @@ export default function UsersList({
   const isSuperAdmin = currentUser?.role == UserRole.SUPER_ADMIN
   const users = data.docs || []
   const totalPages = data.totalPages || 0
-  const { searchValue, changePage, handleSearchClick, handleSearchChange, handleSearchEnter } = usePageUtils(search)
+  const {
+    searchValue,
+    changePage,
+    handleSearchClick,
+    handleSearchChange,
+    handleSearchEnter,
+  } = usePageUtils(search)
   const [loading, setLoading] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null)
@@ -75,6 +81,25 @@ export default function UsersList({
     })
   }
 
+  const getColorByRole = (role: UserRole) => {
+    switch (role) {
+      case UserRole.SUPER_ADMIN:
+        return "green"
+      case UserRole.ADMIN:
+        return "blue"
+      case UserRole.DISTRIBUTOR:
+        return "teal"
+      case UserRole.RESELLER:
+        return "red"
+      case UserRole.CUSTOMER:
+        return "orange"
+      case UserRole.VIP:
+        return "pink"
+      default:
+        return "gray"
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -91,10 +116,7 @@ export default function UsersList({
               placeholder="Search"
               value={searchValue}
               endContent={
-                <Button
-                  variant="ghost"
-                  onClick={handleSearchClick}
-                >
+                <Button variant="ghost" onClick={handleSearchClick}>
                   <SearchIcon />
                 </Button>
               }
@@ -146,13 +168,7 @@ export default function UsersList({
                         <TableCell>{user.company?.name}</TableCell>
                       )}
                       <TableCell>
-                        <Badge
-                          variant={
-                            user.role === UserRole.SUPER_ADMIN
-                              ? "destructive"
-                              : "default"
-                          }
-                        >
+                        <Badge color={getColorByRole(user.role)}>
                           {user.role === UserRole.SUPER_ADMIN ? (
                             <Shield className="w-3 h-3 mr-1" />
                           ) : (
@@ -216,7 +232,12 @@ export default function UsersList({
           {selectedUser && (
             <div className="space-y-4">
               <div className="w-[100px] h-[100px]">
-                <ProfileAvatar baseUrl={BASE_USERS_IMAGE_URL} src={selectedUser.image} name={selectedUser.name} size={100} />
+                <ProfileAvatar
+                  baseUrl={BASE_USERS_IMAGE_URL}
+                  src={selectedUser.image}
+                  name={selectedUser.name}
+                  size={100}
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium">Name</Label>
@@ -234,14 +255,10 @@ export default function UsersList({
                 <Label className="text-sm font-medium">Role</Label>
                 <div className="flex items-center">
                   <Badge
-                    variant={
-                      selectedUser.role === UserRole.SUPER_ADMIN
-                        ? "destructive"
-                        : "default"
-                    }
+                    color={getColorByRole(selectedUser.role)}
                   >
                     {selectedUser.role === UserRole.SUPER_ADMIN ? (
-                      <User className="w-3 h-3 mr-1" />
+                      <Shield className="w-3 h-3 mr-1" />
                     ) : (
                       <User className="w-3 h-3 mr-1" />
                     )}

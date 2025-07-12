@@ -196,6 +196,7 @@ export default function InventoryList({
                 <TableHeader>
                   <TableRow>
                     <TableHead>Product</TableHead>
+                    <TableHead>Variant</TableHead>
                     <TableHead>SKU</TableHead>
                     <TableHead>Current Stock</TableHead>
                     <TableHead>Min Stock</TableHead>
@@ -211,6 +212,9 @@ export default function InventoryList({
                     const stockStatus = getStockStatus(item)
                     return (
                       <TableRow key={item.id}>
+                        <TableCell className="font-medium">
+                          {item.product?.name}
+                        </TableCell>
                         <TableCell className="font-medium">
                           {item.variant?.name}
                         </TableCell>
@@ -279,6 +283,10 @@ export default function InventoryList({
           <form onSubmit={handleSubmit(onEditSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="edit-product_id">Product</Label>
+              <span>{selectedItem?.product?.name}</span>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-product_id">Variant</Label>
               <span>{selectedItem?.variant?.name}</span>
             </div>
 

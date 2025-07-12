@@ -28,6 +28,7 @@ export async function loginAction(
       }
     }
   } catch (error: any) {
+    console.log({ error })
     return {
       error: getErrorMessage(error),
     }

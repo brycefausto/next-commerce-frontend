@@ -1,36 +1,34 @@
 import ImageSelector from "@/components/image-holder/ImageSelector"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { BASE_ITEMS_IMAGE_URL } from "@/config/env"
-import { useState } from "react"
 import {
   FieldErrors,
   UseFieldArrayReturn,
   UseFormRegister,
 } from "react-hook-form"
+import { toast } from "sonner"
 import { ProductFormData } from "./ProductSchema"
-import { Label } from "@/components/ui/label"
 
 export interface ProductVariantFormProps {
   fieldArray: UseFieldArrayReturn<ProductFormData, "variants", "fieldId">
   register: UseFormRegister<ProductFormData>
   errors: FieldErrors<ProductFormData>
-  onChangeVariantImageFiles: (files: (File | undefined)[]) => void
-  onDeleteVariant?: (id: string) => void
+  imageFiles: (File | undefined)[]
+  onChangeImageFiles: (files: (File | undefined)[]) => void
+  onDelete?: (id: string) => void
 }
 
 export default function ProductVariantForm({
   fieldArray: { fields, append, remove },
   register,
   errors,
-  onChangeVariantImageFiles,
-  onDeleteVariant,
+  imageFiles,
+  onChangeImageFiles,
+  onDelete,
 }: ProductVariantFormProps) {
-  const [variantImageFiles, setVariantImageFiles] = useState<
-    (File | undefined)[]
-  >([undefined])
-
   return (
     <div className="space-y-4">
       <div className="font-semibold">Variants</div>
@@ -41,12 +39,17 @@ export default function ProductVariantForm({
               <ImageSelector
                 baseUrl={BASE_ITEMS_IMAGE_URL}
                 image={field.image || ""}
+                file={imageFiles[idx]}
                 required
                 onChangeFile={(file) => {
-                  const updatedImageFiles = [...variantImageFiles]
-                  updatedImageFiles[idx] = file
-                  setVariantImageFiles(updatedImageFiles)
-                  onChangeVariantImageFiles(updatedImageFiles)
+                  try {
+                    console.log({ imageFiles })
+                    const updatedImageFiles = [...imageFiles]
+                    updatedImageFiles[idx] = file
+                    onChangeImageFiles(updatedImageFiles)
+                  } catch (error: any) {
+                    toast.error(error.message)
+                  }
                 }}
                 width={200}
                 height={200}
@@ -167,17 +170,13 @@ export default function ProductVariantForm({
               variant="outline"
               onClick={() => {
                 remove(idx)
-                if (idx >= 0 && idx < variantImageFiles.length - 1) {
-                  const updatedImageFiles = [...variantImageFiles].splice(
-                    idx,
-                    0,
-                  )
-                  setVariantImageFiles(updatedImageFiles)
-                  onChangeVariantImageFiles(updatedImageFiles)
+                if (idx >= 0 && idx < imageFiles.length - 1) {
+                  const updatedImageFiles = [...imageFiles].splice(idx, 0)
+                  onChangeImageFiles(updatedImageFiles)
                 }
                 if (field.id) {
                   console.log("delete variant", field.id)
-                  onDeleteVariant?.(field.id)
+                  onDelete?.(field.id)
                 }
               }}
               disabled={fields.length === 1}

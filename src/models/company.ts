@@ -10,6 +10,7 @@ export interface Company {
   phone?: string
   address?: AddressInfo
   logo?: string
+  vendorId: string
 }
 
 export interface CreateCompanyDto {

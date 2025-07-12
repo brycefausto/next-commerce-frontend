@@ -3,7 +3,7 @@
 import ImageHolder from "@/components/image-holder/ImageHolder"
 import FormLayout from "@/components/layouts/FormLayout"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import NumberInput from "@/components/ui/number-input"
 import { Separator } from "@/components/ui/separator"
 import { BASE_ITEMS_IMAGE_URL } from "@/config/env"
 import { paymentLogos } from "@/config/paymentsLogos"
@@ -11,13 +11,13 @@ import useSlug from "@/hooks/use-slug"
 import { formatPrice } from "@/lib/stringUtils"
 import { useAlertModal } from "@/providers/alert.modal.provider"
 import { useCartStore } from "@/stores/cart.store"
-import { Trash, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 export default function CartForm() {
-  const { slug, addSlug } = useSlug()
+  const { addSlug } = useSlug()
   const [mounted, setMounted] = useState(false)
   const {
     items,
@@ -117,45 +117,12 @@ export default function CartForm() {
                             >
                               Quantity
                             </label>
-                            <div className="flex items-center border rounded-md">
-                              <button
-                                className="px-3 py-1 text-gray-600 hover:bg-gray-100"
-                                aria-label="Decrease quantity"
-                                onClick={() =>
-                                  handleQuantityChange(
-                                    item.id,
-                                    item.quantity - 1,
-                                  )
-                                }
-                              >
-                                -
-                              </button>
-                              <Input
-                                id={`quantity-${item.id}`}
-                                type="number"
-                                min="1"
-                                value={item.quantity}
-                                onChange={(e) =>
-                                  handleQuantityChange(
-                                    item.id,
-                                    Number.parseInt(e.target.value) || 1,
-                                  )
-                                }
-                                className="w-12 text-center border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                              />
-                              <button
-                                className="px-3 py-1 text-gray-600 hover:bg-gray-100"
-                                aria-label="Increase quantity"
-                                onClick={() =>
-                                  handleQuantityChange(
-                                    item.id,
-                                    item.quantity + 1,
-                                  )
-                                }
-                              >
-                                +
-                              </button>
-                            </div>
+                            <NumberInput
+                              defaultValue={item.quantity}
+                              onChange={(value) =>
+                                handleQuantityChange(item.id, value)
+                              }
+                            />
                           </div>
 
                           <div className="text-right min-w-[80px]">

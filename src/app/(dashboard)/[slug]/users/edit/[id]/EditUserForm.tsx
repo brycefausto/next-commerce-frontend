@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { updateUserAction, updateUserImageAction } from "../../actions"
+import { updateUserAction } from "../../actions"
 import { UpdateUserData, updateUserSchema } from "./UpdateUserSchema"
 
 interface EditUserFormProps {
@@ -52,31 +52,10 @@ export default function EditUserForm({ user }: EditUserFormProps) {
         ...data,
         companyId: user?.company?.id || "",
       }
-      const result = await updateUserAction(user.id, updateUserDto)
-      let success = false
+      const result = await updateUserAction(user.id, updateUserDto, imageFile)
       if (result?.success && result?.data) {
-        if (imageFile) {
-          const imageUpdateResult = await updateUserImageAction(
-            result.data.id,
-            imageFile,
-            result.data.image || "",
-          )
-          if (imageUpdateResult.success) {
-            success = true
-          } else {
-            toast.error(
-              imageUpdateResult.error || "Failed to update user image",
-            )
-            return
-          }
-        } else {
-          success = true
-        }
-
-        if (success) {
-          toast.success("User updated successfully!")
-          slugRouterPush("/users")
-        }
+        toast.success("User updated successfully!")
+        slugRouterPush("/users")
       } else {
         toast.error(result?.error || "Failed to update user")
       }

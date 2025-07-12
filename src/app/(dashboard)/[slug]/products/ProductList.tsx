@@ -2,6 +2,7 @@
 
 import { AppPagination } from "@/components/app-pagination"
 import ImageHolder from "@/components/image-holder/ImageHolder"
+import StarRating from "@/components/rating/StarRating"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/table"
 import { BASE_ITEMS_IMAGE_URL } from "@/config/env"
 import usePageUtils from "@/hooks/use-page-utils"
+import useSlug from "@/hooks/use-slug"
 import { formatPrice } from "@/lib/stringUtils"
 import { Product } from "@/models/product"
 import { useAlertModal } from "@/providers/alert.modal.provider"
@@ -32,7 +34,6 @@ import Link from "next/link"
 import { useState } from "react"
 import { toast } from "sonner"
 import { deleteProductAction } from "./actions"
-import useSlug from "@/hooks/use-slug"
 
 export default function ProductList({
   data,
@@ -52,10 +53,10 @@ export default function ProductList({
   const [loading, setLoading] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
 
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const { showDeleteModal } = useAlertModal()
 
-  const handleView = (product: any) => {
+  const handleView = (product: Product) => {
     setSelectedProduct(product)
     setIsViewOpen(true)
   }
@@ -119,6 +120,7 @@ export default function ProductList({
                     <TableHead>Brand</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Price</TableHead>
+                    <TableHead>Rating</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -140,6 +142,9 @@ export default function ProductList({
                       <TableCell>{product.brand || "N/A"}</TableCell>
                       <TableCell>{product.category || "N/A"}</TableCell>
                       <TableCell>{formatPrice(product.price)}</TableCell>
+                      <TableCell>
+                        <StarRating rating={product.rating} readOnly />
+                      </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
                           <Button
@@ -187,7 +192,7 @@ export default function ProductList({
 
       {/* View Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Product Details</DialogTitle>
             <DialogDescription>View product information.</DialogDescription>
@@ -233,6 +238,34 @@ export default function ProductList({
                   {selectedProduct.category || "N/A"}
                 </p>
               </div>
+              {selectedProduct.variants &&
+                selectedProduct.variants.length > 0 && (
+                  <div>
+                    <Label className="text-sm font-medium">Variants</Label>
+                    <div className="mt-2 border rounded-lg">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>SKU</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead>Price</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {selectedProduct.variants.map((variant) => (
+                            <TableRow key={variant.id}>
+                              <TableCell>{variant.name}</TableCell>
+                              <TableCell>{variant.sku}</TableCell>
+                              <TableCell>{variant.description}</TableCell>
+                              <TableCell>${variant.price.toFixed(2)}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                )}
             </div>
           )}
         </DialogContent>
