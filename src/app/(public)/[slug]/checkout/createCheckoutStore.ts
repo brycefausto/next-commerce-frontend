@@ -23,7 +23,6 @@ export const CheckoutStore = createStore<CheckoutStoreProps>()((set) => ({
     state: EMPTY_STATE,
     setCheckoutState: (order: Order, isCheckoutSubmitted: boolean, isBankTransfer?: boolean) => set({ state: { order, isCheckoutSubmitted, isBankTransfer } }),
     resetCheckoutState: () => {
-      console.log("checkout state reset")
       set({ state: EMPTY_STATE })
     }
   }))

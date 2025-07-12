@@ -34,9 +34,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginData) => {
     setLoading(true)
 
-    console.log("Submitting login")
     const result = await loginAction(data)
-    console.log("Login Result", result)
 
     if (result.error) {
       toast.error(result.error || "Login failed")

@@ -5,7 +5,7 @@ import { JWTPayload, SignJWT, jwtVerify } from "jose"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import "server-only"
-import { setBearerToken } from "./serverFetch"
+import { getErrorMessage, setBearerToken } from "./serverFetch"
 
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
@@ -129,7 +129,7 @@ export async function getCompanyFromSlug(slug: string) {
 
     return company
   } catch (error: any) {
-    console.log(error.message)
+    console.log(getErrorMessage(error))
     return
   }
 }

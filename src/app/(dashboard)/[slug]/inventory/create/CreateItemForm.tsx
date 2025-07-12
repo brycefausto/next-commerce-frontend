@@ -49,7 +49,6 @@ export default function CreateInventoryPage() {
     if (resultState.success) {
       slugRouterPush("/inventory")
     } else if (resultState.error) {
-      console.log("resultState error", resultState.error)
       toast.error(resultState.error)
     }
   }

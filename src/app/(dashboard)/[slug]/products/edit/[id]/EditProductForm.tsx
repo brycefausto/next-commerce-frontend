@@ -164,7 +164,6 @@ export default function EditProductForm({ product }: EditProductFormProps) {
               onDelete={(id) => {
                 const updatedIds = [...deletedVariantIds]
                 updatedIds.push(id)
-                console.log("setDeletedVariantIds - id", id)
                 setDeletedVariantIds(updatedIds)
               }}
             />

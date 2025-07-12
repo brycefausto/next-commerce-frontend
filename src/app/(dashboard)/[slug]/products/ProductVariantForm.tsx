@@ -43,7 +43,6 @@ export default function ProductVariantForm({
                 required
                 onChangeFile={(file) => {
                   try {
-                    console.log({ imageFiles })
                     const updatedImageFiles = [...imageFiles]
                     updatedImageFiles[idx] = file
                     onChangeImageFiles(updatedImageFiles)
@@ -175,7 +174,6 @@ export default function ProductVariantForm({
                   onChangeImageFiles(updatedImageFiles)
                 }
                 if (field.id) {
-                  console.log("delete variant", field.id)
                   onDelete?.(field.id)
                 }
               }}

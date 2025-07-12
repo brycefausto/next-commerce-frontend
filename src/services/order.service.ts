@@ -44,7 +44,6 @@ class OrderService {
   }
 
   countReport = async (vendorId: string) => {
-    console.log(`${BASE_URL}/countReport?vendorId=${vendorId}`)
     const { data } = await serverFetch.get<OrderCountReport>(
       `${BASE_URL}/countReport?vendorId=${vendorId}`,
     )
