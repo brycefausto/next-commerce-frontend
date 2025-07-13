@@ -45,7 +45,7 @@ export default function ServerLoaderLayout({ children }: PropsWithChildren) {
         setTimeout(() => {
           setMessageIndex(9)
           setLoading(false)
-        }, 500)
+        }, 2000)
       })
       .catch((error) => {
         toast.error(getErrorMessage(error))

@@ -34,9 +34,13 @@ export async function loginAction(
   }
 
   if (loginUser.role == UserRole.SUPER_ADMIN) {
-    redirect("/admin");
+    redirect("/admin")
+  } else if (loginUser.company) {
+    redirect(`/${loginUser.company?.slug}`)
   } else {
-    redirect(`/${loginUser.company?.slug}`);
+    return {
+      error: "Company does not exists",
+    }
   }
 }
 
