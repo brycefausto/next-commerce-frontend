@@ -53,6 +53,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { deleteOrderAction, updateOrderAction } from "./actions"
 import { EditOrderData, editOrderSchema } from "./EditOrderSchema"
+import HintToolTip from "@/components/tooltip/HintToolTip"
 
 export default function OrderList({
   data,
@@ -73,7 +74,7 @@ export default function OrderList({
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
-  const { showDeleteModal } = useAlertModal()
+  const { showDeleteModal, showConfirmModal } = useAlertModal()
 
   const {
     register,
@@ -121,14 +122,14 @@ export default function OrderList({
   }
 
   const handleDelete = async (order: Order) => {
-    showDeleteModal("Product", async () => {
+    showDeleteModal("Order", async () => {
       try {
         const result = await deleteOrderAction(order.id)
         if (result.success) {
           toast.success(result.message)
         }
       } catch (error) {
-        console.error("Failed to delete product:", error)
+        console.error("Failed to delete order:", error)
         toast.error("Failed to delete order")
       }
     })
@@ -262,7 +263,12 @@ export default function OrderList({
                 <TableHead>Payment Method</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Payment Status</TableHead>
-                <TableHead>Tracking ID</TableHead>
+                <TableHead>
+                  <div className="flex flex-row gap-2">
+                    <span>Tracking ID</span>
+                    <HintToolTip content="This is used for tracking shipping" />
+                  </div>
+                </TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -361,7 +367,10 @@ export default function OrderList({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tracking-id">Tracking ID</Label>
+                <Label htmlFor="tracking-id">
+                  Tracking ID{" "}
+                  <HintToolTip content="This is used for tracking shipping" />
+                </Label>
                 <Input
                   id="tracking-id"
                   placeholder="Enter tracking ID"

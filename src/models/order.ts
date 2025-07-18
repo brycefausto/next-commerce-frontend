@@ -106,7 +106,7 @@ export interface UpdateOrderDto {
 
 export interface UpdateOrderStatusDto {
   status: OrderStatus
-  paymentStatus: PaymentStatus
+  paymentStatus?: PaymentStatus
   trackingId?: string
 }
 

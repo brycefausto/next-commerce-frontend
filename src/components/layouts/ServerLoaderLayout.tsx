@@ -38,7 +38,7 @@ export default function ServerLoaderLayout({ children }: PropsWithChildren) {
       } else {
         setMessageIndex(0)
       }
-    }, 500)
+    }, 1000)
     httpService
       .getHealth()
       .then(() => {
